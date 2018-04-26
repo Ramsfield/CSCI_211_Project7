@@ -3,7 +3,6 @@
 //Project 7
 #include<iostream> //Used for standard out
 #include"bst.h"
-#include"bst.cpp"
 
 int main()
 {
@@ -13,6 +12,7 @@ int main()
   {
     std::cin >> commandInput;
 
+    //Echo Command
     if(commandInput == "echo")
     {
       std::cin.ignore(); //That pesky whitespace
@@ -21,6 +21,7 @@ int main()
       std::cout << output << std::endl;
     }
 
+    //Insert Command
     else if (commandInput == "insert")
     {
       std::cin.ignore(); //That pesky whitespace
@@ -31,18 +32,51 @@ int main()
       if(!tree.insert(inputData)) //Insert it
         std::cout << "insert <" << inputData << "> failed. String already in tree.\n";
     }
+
+    //Size Command
     else if (commandInput == "size")
       std::cout << tree.size() << std::endl;
+
+    //Find Command
     else if (commandInput == "find")
-      std::cout << "Not currently functional\n";
+    {
+      std::cin.ignore(); //That pesky whitespace
+      std::string inputData;
+      std::cin >> inputData;
+      std::cin.ignore(); //Set up for next cin
+
+      std::cout << "<" << inputData << "> is ";
+      if(!tree.find(inputData))
+        std::cout << "not ";
+      std::cout << "in tree.\n";
+    }
+
+    //FIXME This is a very weakly implimented function
+    //Print Function (Depth First)
     else if (commandInput == "print")
-      std::cout << "Not currently functional\n";
+    {
+      std::cout << "{";
+      tree.print();
+      std::cout << "}\n";
+      std::cin.ignore();
+    }
+
+    //FIXME Absolutely broken
+    //Print Function (Breadth First)
     else if (commandInput == "breadth")
-      std::cout << "Not currently functional\n";
+    {
+      std::cout << "{";
+      tree.breadth();
+      std::cout << "}\n";
+      std::cin.ignore();
+    }
+    //TODO
     else if (commandInput == "distance")
       std::cout << "Not currently functional\n";
+    //TODO
     else if (commandInput == "balanced")
       std::cout << "Not currently functional\n";
+    //TODO
     else if (commandInput == "rebalance")
       std::cout << "Not currently functional\n";
     else

@@ -25,6 +25,15 @@ class BST{
     //Size 
     int size(Node* cur) {return (!cur)? 0 : 1 + size(cur->left) + size(cur->right); }
     int size() {return size(root);}
+    //Find
+    bool find(T, Node*);
+    bool find(T findData) { return find(findData, root); }
+    //Print
+    void print(Node*, Node*);
+    void print();
+    //Breadth
+    void breadth(Node*, Node*);
+    void breadth();
 };
 
 #endif
