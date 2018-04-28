@@ -26,8 +26,7 @@ int main()
     {
       std::cin.ignore(); //That pesky whitespace
       std::string inputData;
-      std::cin >> inputData;
-      std::cin.ignore(); //Set up for next cin
+      getline(std::cin, inputData);
 
       if(!tree.insert(inputData)) //Insert it
         std::cout << "insert <" << inputData << "> failed. String already in tree.\n";
@@ -51,7 +50,6 @@ int main()
       std::cout << "in tree.\n";
     }
 
-    //FIXME This is a very weakly implimented function
     //Print Function (Depth First)
     else if (commandInput == "print")
     {
@@ -61,7 +59,6 @@ int main()
       std::cin.ignore();
     }
 
-    //FIXME Absolutely broken
     //Print Function (Breadth First)
     else if (commandInput == "breadth")
     {
@@ -70,15 +67,27 @@ int main()
       std::cout << "}\n";
       std::cin.ignore();
     }
-    //TODO
+
+    //FIXME Logic is incredibly screwed up
     else if (commandInput == "distance")
-      std::cout << "Not currently functional\n";
+    {
+      std::cout << tree.distance() << std::endl;
+      std::cin.ignore();
+    }
+
     //TODO
     else if (commandInput == "balanced")
       std::cout << "Not currently functional\n";
     //TODO
     else if (commandInput == "rebalance")
       std::cout << "Not currently functional\n";
+
+    //Height command
+    else if (commandInput == "height")
+    {
+      std::cout << tree.height() << std::endl;
+      std::cin.ignore();
+    }
     else
     {
       std::cerr << "Illegal command <" << commandInput << ">.\n";

@@ -4,6 +4,19 @@
 #include"bst.h"
 #include<iostream> //Print function
 
+//Vector print function
+  template<class T>
+void BST<T>::printVec(std::vector<T> vec)
+{
+  int sz = size(); //Get amount of nodes
+  for(int i = 0; i < sz ; i++)
+  {
+    std::cout << vec[i];
+    if(!(i == sz-1)) //If not last item in list
+      std::cout << ", ";
+  }
+}
+
 //Insert function
   template<class T>
 bool BST<T>::insert(T insertData, Node * &cur)
@@ -26,6 +39,19 @@ bool BST<T>::insert(T insertData, Node * &cur)
   return insert(insertData, cur->right);
 }
 
+//Height Function
+  template<class T>
+int BST<T>::height(Node *cur)
+{
+  //Base Case: empty subtree
+  if(!cur)
+    return 0;
+  int x = height(cur->left);
+  int y = height(cur->right);
+
+  return 1 + ((x>y) ? x : y);
+}
+
 //Find Function
   template<class T>
 bool BST<T>::find(T findData, Node* cur)
@@ -45,55 +71,86 @@ bool BST<T>::find(T findData, Node* cur)
 
 //Print Function (Depth First)
   template<class T>
-void BST<T>::print(Node* cur, Node* wednesday) //Wednesay delineates when I no longer need a ", "
+void BST<T>::print(Node* cur, std::vector<T> &depthVec)
 {
+  //Base Case: Empty tree
   if(!cur)
     return;
-  print(cur->left, wednesday);
-  std::cout << cur->data;
-  if(cur->data != wednesday->data)
-    std::cout << ", ";
-  print(cur->right, wednesday);
+  //In order depth first
+  print(cur->left, depthVec);
+  depthVec.push_back(cur->data);
+  print(cur->right, depthVec);
 }
 
 //Print Function (No param)
   template<class T>
 void BST<T>::print() 
 {
-  Node* cur = root;
-  if(!cur)
-    return; //No need to print. It's empty.
-  while(cur->right)
-    cur = cur->right; //Delineates the last item we print
+  std::vector<T> depthVec;
 
-  print(root, cur); //Call actual print function
+  print(root, depthVec);
+
+  printVec(depthVec);
 }
 
-//Breadth Function (Breadth First Printing)
+//Breadth Function
   template<class T>
-void BST<T>::breadth(Node* cur, Node* wednesday) //Wednesay delineates when I no longer need a ", " Called Wednesday because it was the data I was working with
+void BST<T>::breadth(Node* cur, int level, std::vector<T> &breadthQueue)
 {
-  //Base case. No need them seg faults now.
   if(!cur)
     return;
-  std::cout << cur->data;
-  if(cur->data != wednesday->data)
-    std::cout << ", ";
-  breadth(cur->left, wednesday);
-  breadth(cur->right, wednesday);
+  if(level == 1)
+    breadthQueue.push_back(cur->data);
+  else 
+  {
+    breadth(cur->left, level-1, breadthQueue);
+    breadth(cur->right, level-1, breadthQueue);
+  }
 }
 
-//Breadth Function (No param)
+//Breadth Function (No Param)
   template<class T>
-void BST<T>::breadth() 
+void BST<T>::breadth()
 {
-  Node* cur = root;
-  if(!cur)
-    return; //No need to print. It's empty.
-  while(cur->right)
-    cur = cur->right; //Delineates the last item we print
+  std::vector<T> breadthQueue;
+  for(int level = 1; level <= height(); level++)
+  {
+    breadth(root, level, breadthQueue);
+  }
+  printVec(breadthQueue);
+}
 
-  breadth(root, cur); //Call actual print function
+
+//Distance Function -- Finds all distances
+  template<class T>
+void BST<T>::distance(Node* cur, std::vector<int> &dist, int cur_count)
+{
+  //When reaching 
+  if(!cur)
+  {
+    if(cur_count != 0)
+      dist.push_back(cur_count - 1);
+  }
+  distance(cur->left, dist, cur_count+1);
+  distance(cur->right, dist, cur_count+1);
+
+}
+
+//Distance Function -- Finds average
+  template<class T>
+float BST<T>::distance()
+{
+  std::vector<int> dist;
+
+  distance(root, dist, 0);
+
+  float total(0);
+  for(unsigned int i = 0; i < dist.size(); i++)
+  {
+    std::cout << dist[i] << "\n";
+    total += dist[i];
+  }
+  return ((dist.size() != 0) ? total/(dist.size()) : 0);
 }
 
 template class BST<std::string>;

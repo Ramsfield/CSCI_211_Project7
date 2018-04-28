@@ -5,6 +5,7 @@
 #define BST_H
 
 #include<cstddef> //NULL
+#include<vector> //Assists with print
 
 template<class T> 
 class BST{
@@ -18,22 +19,52 @@ class BST{
     };
     Node* root = NULL;
 
-  public:
+    //Inner print function
+     void printVec(std::vector<T>);
+
     //Insert
-    bool insert(T insertData) { return insert(insertData, this->root);}
     bool insert(T insertData, Node* &cur);
+
     //Size 
     int size(Node* cur) {return (!cur)? 0 : 1 + size(cur->left) + size(cur->right); }
-    int size() {return size(root);}
+
+    //Height
+    int height(Node*);
+
     //Find
     bool find(T, Node*);
-    bool find(T findData) { return find(findData, root); }
+
     //Print
-    void print(Node*, Node*);
-    void print();
+    void print(Node*, std::vector<T>&);
+
     //Breadth
-    void breadth(Node*, Node*);
+    void breadth(Node*, int, std::vector<T>&);
+
+    //Distance
+    void distance(Node*,std::vector<int>&,int);
+
+  public:
+
+    //Insert
+    bool insert(T insertData) { return insert(insertData, this->root);}
+
+    //Size 
+    int size() {return size(root);}
+
+    //Height
+    int height() { return height(root); }
+
+    //Find
+    bool find(T findData) { return find(findData, root); }
+
+    //Print
+    void print();
+
+    //Breadth -- Prints based off of level
     void breadth();
+    
+    //Distance -- Prints average distance nodes are from root
+    float distance();
 };
 
 #endif
