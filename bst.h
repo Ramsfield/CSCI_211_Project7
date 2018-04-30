@@ -13,17 +13,20 @@ class BST{
     class Node{
       public:
         Node(T data, Node *left = NULL, Node *right=NULL) : data(data), left(left), right(right) {}
+        ~Node() {delete left; delete right;} 
         T data;
         Node *left;
         Node *right;
     };
     Node* root = NULL;
 
+    // PRIVATE FUNCTIONS
+
     //Inner print function
      void printVec(std::vector<T>);
 
     //Insert
-    bool insert(T insertData, Node* &cur);
+    bool insert(T, Node*&);
 
     //Size 
     int size(Node* cur) {return (!cur)? 0 : 1 + size(cur->left) + size(cur->right); }
@@ -43,6 +46,15 @@ class BST{
     //Distance
     void distance(Node*,std::vector<int>&,int);
 
+    //Balanced
+    bool balanced(Node*, int);
+
+    //Rebalance (private function, inserts nodes back into tree)
+    void rebalance(std::vector<T>&, int, int);
+
+    //Clear -- DOES NOT SAVE NODES
+    void clear(Node*&);
+
   public:
 
     //Insert
@@ -58,13 +70,23 @@ class BST{
     bool find(T findData) { return find(findData, root); }
 
     //Print
-    void print();
+    //Takes in and fills a vector with the nodes of the tree
+    void print(std::vector<T>&);
 
     //Breadth -- Prints based off of level
-    void breadth();
+    void breadth(std::vector<T> &);
     
     //Distance -- Prints average distance nodes are from root
     float distance();
+
+    //Balanced
+    int balanced();
+
+    //Rebalance
+    void rebalance();
+
+    //Clear -- DANGEROUS STUFF MAN
+    void clear() { clear(root); }
 };
 
 #endif

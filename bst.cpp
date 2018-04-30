@@ -3,19 +3,7 @@
 //Project 7
 #include"bst.h"
 #include<iostream> //Print function
-
-//Vector print function
-  template<class T>
-void BST<T>::printVec(std::vector<T> vec)
-{
-  int sz = size(); //Get amount of nodes
-  for(int i = 0; i < sz ; i++)
-  {
-    std::cout << vec[i];
-    if(!(i == sz-1)) //If not last item in list
-      std::cout << ", ";
-  }
-}
+#include<queue> //Used for Rebalance
 
 //Insert function
   template<class T>
@@ -84,16 +72,15 @@ void BST<T>::print(Node* cur, std::vector<T> &depthVec)
 
 //Print Function (No param)
   template<class T>
-void BST<T>::print() 
+void BST<T>::print(std::vector<T> &depthVec) 
 {
-  std::vector<T> depthVec;
+  depthVec.clear(); //Ensure we're working with an empty vector
 
-  print(root, depthVec);
-
-  printVec(depthVec);
+  print(root, depthVec); //Fill that bad boy up
 }
 
 //Breadth Function
+//Inserts into vector
   template<class T>
 void BST<T>::breadth(Node* cur, int level, std::vector<T> &breadthQueue)
 {
@@ -110,14 +97,13 @@ void BST<T>::breadth(Node* cur, int level, std::vector<T> &breadthQueue)
 
 //Breadth Function (No Param)
   template<class T>
-void BST<T>::breadth()
+void BST<T>::breadth(std::vector<T> &breadthQueue)
 {
-  std::vector<T> breadthQueue;
+  breadthQueue.clear(); //Make sure vector is empty before we fill it
   for(int level = 1; level <= height(); level++)
   {
-    breadth(root, level, breadthQueue);
+    breadth(root, level, breadthQueue); //Fill the vector
   }
-  printVec(breadthQueue);
 }
 
 
@@ -125,12 +111,14 @@ void BST<T>::breadth()
   template<class T>
 void BST<T>::distance(Node* cur, std::vector<int> &dist, int cur_count)
 {
-  //When reaching 
+  //No node
   if(!cur)
   {
-    if(cur_count != 0)
-      dist.push_back(cur_count - 1);
+    return;
   }
+
+  dist.push_back(cur_count); //Add distance from root (Root will add "0", child will add 1, so on)
+
   distance(cur->left, dist, cur_count+1);
   distance(cur->right, dist, cur_count+1);
 
@@ -147,10 +135,95 @@ float BST<T>::distance()
   float total(0);
   for(unsigned int i = 0; i < dist.size(); i++)
   {
-    std::cout << dist[i] << "\n";
     total += dist[i];
   }
   return ((dist.size() != 0) ? total/(dist.size()) : 0);
+}
+
+//Balanced Function -- Private, overloaded
+  template<class T>
+bool BST<T>::balanced(Node* cur, int dist)
+{
+  //Cur is null and at not max distance
+  if(!cur && dist > 0)
+    return false;
+  //Cur is null and at max distance
+  if(!cur)
+    return true;
+  //Recurse case
+  return (balanced(cur->left, dist-1) && balanced(cur->right, dist-1)) ? true : false; //If both left and right return true, return true. Otherwise its false.
+}
+
+//Balaced Function -- depends on Distance
+  template<class T>
+int BST<T>::balanced()
+{
+  std::vector<int> dist; //Finds all distances so we can get largest
+
+  distance(root, dist, 0);
+  int largestDist(0);
+  for(unsigned int i=0; i < dist.size(); i++) //Gets largest distance to make sure tree is balanced
+  {
+    if(dist[i] > largestDist)
+      largestDist = dist[i];
+  }
+
+  return balanced(root, largestDist - 1) ? largestDist : -1;
+}
+
+//Rebalance Function -- Depends on print(to add to queue)
+//FIXME This needs to be a better algorithm
+/*
+ * Add half the nodes to a queue then insert middle node
+ * now we have two queues:
+ * cut each in half and insert middle
+ * repeat until nothing left to insert
+ */
+  template<class T>
+void BST<T>::rebalance()
+{
+  std::vector<T> treeV;
+  //Get all nodes
+  print(root, treeV);
+  //Clear tree
+  clear();
+
+  //Refill tree
+  rebalance(treeV, 0, treeV.size());
+}
+
+//Algorithm for rebalancing
+  template<class T>
+void BST<T>::rebalance(std::vector<T> &treeV, int min, int max)
+{
+  int mid = (min+max)/2;
+  //Insert root
+  insert(treeV[mid]);
+  //Base Case: last element in vect
+  if(min == max) return;
+  //Recursive cases: Work on left subtree
+  rebalance(treeV, min, mid);
+  //Work on right subtree
+  rebalance(treeV, mid, max);
+}
+
+//Clear Function
+  template<class T>
+void BST<T>::clear(Node* &cur)
+{
+  //Base Case: end of tree
+  if(!cur)
+    return;
+  //clear left subtree
+  clear(cur->left);
+  cur->left = NULL;
+  //clear right subtree
+  clear(cur->right);
+  cur->right = NULL;
+
+  //Clear root node
+  delete cur;
+  cur = NULL;
 }
 
 template class BST<std::string>;

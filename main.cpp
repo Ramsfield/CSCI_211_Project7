@@ -3,6 +3,13 @@
 //Project 7
 #include<iostream> //Used for standard out
 #include"bst.h"
+#include<vector> //Used for print
+
+/*
+ * Utilized for printing both breadth and depth. Asks BST for a vector of the elements
+ * then runs through, printing them
+ */
+void printVec(std::vector<std::string>&);
 
 int main()
 {
@@ -29,7 +36,7 @@ int main()
       getline(std::cin, inputData);
 
       if(!tree.insert(inputData)) //Insert it
-        std::cout << "insert <" << inputData << "> failed. String already in tree.\n";
+        std::cerr << "insert <" << inputData << "> failed. String already in tree.\n";
     }
 
     //Size Command
@@ -53,8 +60,10 @@ int main()
     //Print Function (Depth First)
     else if (commandInput == "print")
     {
+      std::vector<std::string> stringVec;
       std::cout << "{";
-      tree.print();
+      tree.print(stringVec); //Fill up the vec
+      printVec(stringVec); //Print out the vec
       std::cout << "}\n";
       std::cin.ignore();
     }
@@ -62,30 +71,54 @@ int main()
     //Print Function (Breadth First)
     else if (commandInput == "breadth")
     {
+      std::vector<std::string> stringVec;
       std::cout << "{";
-      tree.breadth();
+      tree.breadth(stringVec); //Fill vector
+      printVec(stringVec); //Print vector
       std::cout << "}\n";
       std::cin.ignore();
     }
 
-    //FIXME Logic is incredibly screwed up
+    //Distance Function
     else if (commandInput == "distance")
     {
-      std::cout << tree.distance() << std::endl;
+      std::cout << "Average distance of nodes to root = " << tree.distance() << std::endl;
+      std::cin.ignore();
+    }
+
+
+    //Balanced Function
+    //Balanced returns height if it is balanced, -1 if not balanced
+    else if (commandInput == "balanced")
+    {
+      std::cout << "Tree is ";
+
+      //Check if tree is balanced
+      if(tree.balanced() == -1)
+        std::cout << "not ";
+
+      std::cout << "balanced.\n";
       std::cin.ignore();
     }
 
     //TODO
-    else if (commandInput == "balanced")
-      std::cout << "Not currently functional\n";
-    //TODO
     else if (commandInput == "rebalance")
-      std::cout << "Not currently functional\n";
+    {
+      tree.rebalance();
+      std::cin.ignore();
+    }
 
-    //Height command
+    //Height command -- Added for debugging use
     else if (commandInput == "height")
     {
       std::cout << tree.height() << std::endl;
+      std::cin.ignore();
+    }
+    
+    //Clear command -- Added for debugging use
+    else if (commandInput == "clear")
+    {
+      tree.clear();
       std::cin.ignore();
     }
     else
@@ -96,4 +129,14 @@ int main()
     }
   }
   return 0;
+}
+
+void printVec(std::vector<std::string> &stringVec)
+{
+  for(unsigned int i = 0; i < stringVec.size(); i++)
+  {
+    std::cout << stringVec[i];
+    if(!(i==stringVec.size()-1))
+      std::cout << ", "; // Checks if it is the last thing printing out
+  }
 }
