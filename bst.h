@@ -47,7 +47,7 @@ class BST{
     void distance(Node*,std::vector<int>&,int);
 
     //Balanced
-    bool balanced(Node*, int);
+    bool balanced(Node*);
 
     //Rebalance (private function, inserts nodes back into tree)
     void rebalance(std::vector<T>&, int, int);
@@ -61,13 +61,13 @@ class BST{
     bool insert(T insertData) { return insert(insertData, this->root);}
 
     //Size 
-    int size() {return size(root);}
+    int size() {return size(this->root);}
 
     //Height
-    int height() { return height(root); }
+    int height() { return height(this->root); }
 
     //Find
-    bool find(T findData) { return find(findData, root); }
+    bool find(T findData) { return find(findData, this->root); }
 
     //Print
     //Takes in and fills a vector with the nodes of the tree
@@ -86,7 +86,7 @@ class BST{
     void rebalance();
 
     //Clear -- DANGEROUS STUFF MAN
-    void clear() { clear(root); }
+    void clear() { clear(this->root); }
 };
 
 #endif

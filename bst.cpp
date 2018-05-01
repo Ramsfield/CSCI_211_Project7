@@ -142,33 +142,26 @@ float BST<T>::distance()
 
 //Balanced Function -- Private, overloaded
   template<class T>
-bool BST<T>::balanced(Node* cur, int dist)
+bool BST<T>::balanced(Node* cur)
 {
-  //Cur is null and at not max distance
-  if(!cur && dist > 0)
-    return false;
-  //Cur is null and at max distance
+  //Base Case: Empty subtrees are balanced
   if(!cur)
     return true;
-  //Recurse case
-  return (balanced(cur->left, dist-1) && balanced(cur->right, dist-1)) ? true : false; //If both left and right return true, return true. Otherwise its false.
+  int diff = height(cur->left) - height(cur->right);
+
+  //Base Case: Tree is not balanced
+  if(diff > 1 || diff < -1)
+    return false;
+
+  //Recursive case
+ return( balanced(cur->left) && balanced(cur->right) );
 }
 
 //Balaced Function -- depends on Distance
   template<class T>
 int BST<T>::balanced()
 {
-  std::vector<int> dist; //Finds all distances so we can get largest
-
-  distance(root, dist, 0);
-  int largestDist(0);
-  for(unsigned int i=0; i < dist.size(); i++) //Gets largest distance to make sure tree is balanced
-  {
-    if(dist[i] > largestDist)
-      largestDist = dist[i];
-  }
-
-  return balanced(root, largestDist - 1) ? largestDist : -1;
+  return balanced(root) ? height() : -1;
 }
 
 //Rebalance Function
