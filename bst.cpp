@@ -171,14 +171,7 @@ int BST<T>::balanced()
   return balanced(root, largestDist - 1) ? largestDist : -1;
 }
 
-//Rebalance Function -- Depends on print(to add to queue)
-//FIXME This needs to be a better algorithm
-/*
- * Add half the nodes to a queue then insert middle node
- * now we have two queues:
- * cut each in half and insert middle
- * repeat until nothing left to insert
- */
+//Rebalance Function
   template<class T>
 void BST<T>::rebalance()
 {
@@ -189,22 +182,37 @@ void BST<T>::rebalance()
   clear();
 
   //Refill tree
-  rebalance(treeV, 0, treeV.size());
+  rebalance(treeV, 0, treeV.size() - 1);
 }
 
 //Algorithm for rebalancing
   template<class T>
 void BST<T>::rebalance(std::vector<T> &treeV, int min, int max)
 {
-  int mid = (min+max)/2;
+  //Base case: Only one item left to insert
+  if(min == max)
+  {
+    insert(treeV[min]);
+    return;
+  }
+  //Base case: Only two items left to insert
+  if(min == max-1)
+  {
+    insert(treeV[min]);
+    insert(treeV[max]);
+    return;
+  }
+  /*
+   *Get middle of the vector, insert into tree then split vector off into two vectors: one left, one right. 
+   *Recursively act upon those vectors until we have 2 or 1 items left, base case those, and return.
+   */
+  int mid = (min+max)/2; // Middle of vector. Will math.floor if min+max is odd
   //Insert root
   insert(treeV[mid]);
-  //Base Case: last element in vect
-  if(min == max) return;
   //Recursive cases: Work on left subtree
-  rebalance(treeV, min, mid);
+  rebalance(treeV, min, mid - 1);
   //Work on right subtree
-  rebalance(treeV, mid, max);
+  rebalance(treeV, mid + 1, max);
 }
 
 //Clear Function
